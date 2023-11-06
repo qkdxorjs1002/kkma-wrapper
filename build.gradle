@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group = 'kr.paragonnov'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes 'Version': 1.0, 'Main-Class': 'kr.paragonnov.KkmaWrapper'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+}
+
+dependencies {
+    implementation files("libs/kkma-2.1.jar")
+
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
