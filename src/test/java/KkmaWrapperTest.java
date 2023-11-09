@@ -29,6 +29,24 @@ public class KkmaWrapperTest {
         );
     }
 
+    @DisplayName("Command-line test (--log)")
+    @Test
+    public void commandTestLog() {
+        final String expectedResult = "[[\"안녕/NNG\",\"하/XSV\",\"세요/EFN\",\"./SF\"]]";
+        final String[] args = {
+                "--log",
+                "안녕하세요."
+        };
+
+        final String actualResult = KkmaWrapper.runKkma(args);
+        System.out.println(actualResult);
+
+        Assertions.assertEquals(
+                expectedResult,
+                actualResult
+        );
+    }
+
     @DisplayName("Command-line Test")
     @Test
     public void commandTest() {
@@ -127,15 +145,19 @@ public class KkmaWrapperTest {
         }
         final String expectedResult = new Gson().toJson(expectedMorphList);
 
-        final String[] args = {
+        final List<String> textList = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            textList.add(Base64.getEncoder().encodeToString(Integer.toString(i).concat("안녕하세요, 반가워요. 잘 있어요. 다시 만나요.").getBytes()));
+        }
+
+        final List<String> argList = new ArrayList<>(List.of(
                 "--log",
                 "--b64",
-                "--disable-print-output",
-                Base64.getEncoder().encodeToString("0안녕하세요, 반가워요. 잘 있어요. 다시 만나요.".getBytes()),
-                Base64.getEncoder().encodeToString("1안녕하세요, 반가워요. 잘 있어요. 다시 만나요.".getBytes()),
-                Base64.getEncoder().encodeToString("2안녕하세요, 반가워요. 잘 있어요. 다시 만나요.".getBytes()),
-                Base64.getEncoder().encodeToString("3안녕하세요, 반가워요. 잘 있어요. 다시 만나요.".getBytes())
-        };
+                "--disable-print-output"
+        ));
+        argList.addAll(textList);
+
+        final String[] args = argList.toArray(String[]::new);
 
         final String actualResult = KkmaWrapper.runKkma(args);
         final String decodedActualResult = new String(Base64.getDecoder().decode(actualResult));
