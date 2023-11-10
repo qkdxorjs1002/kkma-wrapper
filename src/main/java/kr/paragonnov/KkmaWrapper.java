@@ -10,7 +10,15 @@ import java.util.*;
 
 public class KkmaWrapper {
 
-    public static final String helpMessage = ">>> Usage <<<\n  > java -jar kkma-wrapper.jar <Options> <Input Text 1> <Input Text 2> <Input Text 3> ...\n\n>>> Options <<<\n  --help\t\t\t help.\n  --log\t\t\t\t enable kkma log output.\n  --b64\t\t\t\t enable base64 input/output.\n  --disable-print-output\t disable output printing.\n";
+    public static final String helpMessage = ">>> Usage <<<\n" +
+            "  > java -jar kkma-wrapper.jar <Options> <Input Text 1> <Input Text 2> <Input Text 3> ...\n" +
+            "\n" +
+            ">>> Options <<<\n" +
+            "  --help                        help.\n" +
+            "  --log                         enable kkma log output.\n" +
+            "  --b64                         enable base64 input/output.\n" +
+            "  --disable-print-output        disable output printing.\n" +
+            "  --pretty                      pretty output printing.";
 
     public static void main(String[] args) {
         KkmaWrapper.runKkma(args);
@@ -24,6 +32,7 @@ public class KkmaWrapper {
         final boolean enableLog = argList.remove("--log");
         final boolean enableB64 = argList.remove("--b64");
         final boolean enablePrint = !argList.remove("--disable-print-output");
+        final boolean enablePretty = argList.remove("--pretty");
 
         // Help
         if (isHelp) {
@@ -33,6 +42,10 @@ public class KkmaWrapper {
 
         // Empty result
         String emptyResult = "[[]]";
+        // Pretty Print
+        if (enablePretty && !enableB64) {
+            emptyResult = "No result";
+        }
         // Empty result with B64
         if (enableB64) {
             emptyResult = Base64.getEncoder().encodeToString(emptyResult.getBytes());
@@ -104,7 +117,18 @@ public class KkmaWrapper {
 
         // Print result
         if (enablePrint) {
-            System.out.print(resultString);
+            if (enablePretty && !enableB64) {
+                for (List<String> list : outputList) {
+                    StringBuilder text = new StringBuilder();
+                    for (String morph : list) {
+                        final String prettyMorph = morph.replace("/", "(").concat(") ");
+                        text.append(prettyMorph);
+                    }
+                    System.out.println(text);
+                }
+            } else {
+                System.out.print(resultString);
+            }
         }
 
         // Close logger

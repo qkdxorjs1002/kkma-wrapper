@@ -136,6 +136,29 @@ public class KkmaWrapperTest {
         );
     }
 
+    @DisplayName("Command-line Test (--b64 & --pretty)")
+    @Test
+    public void commandTestB64Pretty() {
+        final String expectedResult = "[[\"안녕/NNG\",\"하세/NNG\",\"요/JX\",\",/SP\",\"반갑/VA\",\"어요/EFN\",\"./SF\",\"잘/MAG\",\"있/VA\",\"어요/EFN\",\"./SF\",\"다시/MAG\",\"만나/VV\",\"아요/EFN\",\"./SF\"]]";
+
+        final String[] args = {
+                "--log",
+                "--b64",
+                "--pretty",
+                "--disable-print-output",
+                Base64.getEncoder().encodeToString("안녕하세요, 반가워요. 잘 있어요. 다시 만나요.".getBytes())
+        };
+
+        final String actualResult = KkmaWrapper.runKkma(args);
+        final String decodedActualResult = new String(Base64.getDecoder().decode(actualResult));
+        System.out.println(decodedActualResult);
+
+        Assertions.assertEquals(
+                expectedResult,
+                decodedActualResult
+        );
+    }
+
     @DisplayName("Command-line Test (--b64 & List)")
     @Test
     public void commandTestB64List() {
@@ -166,6 +189,33 @@ public class KkmaWrapperTest {
         Assertions.assertEquals(
                 expectedResult,
                 decodedActualResult
+        );
+    }
+
+    @DisplayName("Command-line Test (--pretty & List)")
+    @Test
+    public void commandTestPrettyList() {
+        final List<List<String>> expectedMorphList = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            expectedMorphList.add(List.of("안녕/NNG", "하세/NNG", "요/JX", ",/SP", "반갑/VA", "어요/EFN", "./SF", "잘/MAG", "있/VA", "어요/EFN", "./SF", "다시/MAG", "만나/VV", "아요/EFN", "./SF", Integer.toString(i).concat("/NR")));
+        }
+        final String expectedResult = new Gson().toJson(expectedMorphList);
+
+        final List<String> argList = new ArrayList<>(List.of(
+                "--log",
+                "--pretty"
+        ));
+        for (int i = 0; i < 1000; i++) {
+            argList.add("안녕하세요, 반가워요. 잘 있어요. 다시 만나요.".concat(Integer.toString(i)));
+        }
+        final String[] args = argList.toArray(String[]::new);
+
+        final String actualResult = KkmaWrapper.runKkma(args);
+        System.out.println(actualResult);
+
+        Assertions.assertEquals(
+                expectedResult,
+                actualResult
         );
     }
 }

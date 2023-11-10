@@ -9,10 +9,11 @@
   > java -jar kkma-wrapper.jar <Options> <Input Text 1> <Input Text 2> <Input Text 3> ...
 
 >>> Options <<<
-  --help			 help.
-  --log				 enable kkma log output.
-  --b64				 enable base64 input/output.
-  --disable-print-output	 disable output printing.
+  --help                        help.
+  --log                         enable kkma log output.
+  --b64                         enable base64 input/output.
+  --disable-print-output        disable output printing.
+  --pretty                      pretty output printing.
 ```
 
 ## 예시
@@ -21,6 +22,14 @@
 ```bash
 > java -jar kkma-2.1-wrapper-1.0-SNAPSHOT.jar "안녕하세요" " 감사합니다." "잘가요." "누구보다 빠르게"
 [["안녕/NNG","하/XSV","세요/EFN"],["감사/NNG","하/XSV","ㅂ니다/EFN","./SF"],["잘/MAG","가/VV","아요/EFN","./SF"],["누구/NP","보다/JKM","빠르/VA","게/ECD"]]
+```
+
+### 읽기 쉬운 출력
+```bash
+> java -jar kkma-2.1-wrapper-1.0-SNAPSHOT.jar --pretty "안녕하세요 감사해요 잘있어요 다시 만나요" "내일은 주말" "토요일은 주말"
+안녕(NNG) 하세(NNG) 요(JX) 감사(NNG) 하(XSV) 어요(EFN) 잘(MAG) 있(VA) 어요(EFN) 다시(MAG) 만나(VV) 아요(EFN) 
+내일(NNG) 은(JX) 주말(NNG) 
+토요일(NNG) 은(JX) 주말(NNG) 
 ```
 
 ### BASE64 인코딩 입/출력
